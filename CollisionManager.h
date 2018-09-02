@@ -3,6 +3,12 @@
 
 class GameObject;
 class Ball;
+class Block;
+
+#include "Vector2D.h"
+
+#include <algorithm>
+#include <vector>
 
 class CollisionManager {
 
@@ -16,6 +22,10 @@ public:
     //returns true if parameter rectangle is colliding with circle
     bool isCollidingRectCircle(Ball* circle, GameObject* rect);
 
+    std::vector<Vector2D> lineRect(Vector2D lineStartPos, Vector2D lineEndPos, Block* rect);
+
+    Vector2D lineLine(Vector2D p1, Vector2D p2, Vector2D p3, Vector2D p4);
+    
     //should value passed in be outside the upper/lower range it is clamped to this value
     double clamp(double value, double upper, double lower);
     

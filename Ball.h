@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "Vector2D.h"
 #include "TextureManager.h"
+#include "CollisionManager.h"
 
 #include <iostream>
 #include <string>
@@ -15,7 +16,7 @@ public:
 
   Ball(int x, int y, unsigned p_numFrames, unsigned p_currentRow, unsigned p_currentFrame);
 
-
+  void fixedUpdate(float frameTimeRemaining = 1000.0f / 60);
   virtual void update();
   virtual void draw();
 
@@ -32,6 +33,8 @@ public:
   unsigned bounceCooldown;
 
   bool toBeDeleted;
+
+  Block* lastBlockCollidedWith;
 };
 
 #endif

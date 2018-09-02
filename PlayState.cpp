@@ -19,7 +19,7 @@ PlayState* PlayState::Instance()
 }
 
 PlayState::PlayState()
-    : score(0), highScore(0), levelNumber(1), gameOver(false), canShoot(true), shooter(nullptr)
+    : score(0), highScore(0), levelNumber(0), gameOver(false), canShoot(true), shooter(nullptr)
 {
   srand (time(NULL));
 
@@ -44,6 +44,7 @@ void PlayState::setupLevel()
 {
   gameOver = false;
   score = 0;
+  levelNumber++;
   //clean();
 
   //setup first row of blocks
@@ -63,7 +64,7 @@ void PlayState::spawnNextRowBlocks()
   {
     for (size_t i = 0; i < toInstantiateDoubleSushiRowIndex.size(); i++)
     {
-      Block* newSushi = new Block(toInstantiateDoubleSushiRowIndex[i]*48, 120, 0, 1, 0);
+      Block* newSushi = new Block(toInstantiateDoubleSushiRowIndex[i]*48, 144, 0, 1, 0, levelNumber);
       newSushi->setTextureID("VerticalBlocks");
       blocks.push_back(newSushi);
       xPos[toInstantiateDoubleSushiRowIndex[i]] = true;
@@ -130,9 +131,9 @@ void PlayState::spawnNextRowBlocks()
               unsigned sushiSprite = rand() % 2+1;
 
               //create blocks
-              Block* newSushiA = new Block(pos*48, 144, 0, sushiSprite, 0);
+              Block* newSushiA = new Block(pos*48, 144, 0, sushiSprite, 0, levelNumber);
               newSushiA->setTextureID("HorizontalBlocks");
-              Block* newSushiB = new Block((pos+1)*48, 144, 0, sushiSprite, 1);
+              Block* newSushiB = new Block((pos+1)*48, 144, 0, sushiSprite, 1, levelNumber);
               newSushiB->setTextureID("HorizontalBlocks");
               std::cout << "spawning horiz bloc\n";
 
@@ -154,7 +155,7 @@ void PlayState::spawnNextRowBlocks()
           }
         case 0: case 1:  case 2:  case 3: //instantiate a normal sushi
           { 
-            Block* newSushi = new Block(pos*48, 144, 0, 1, rand() % 3);
+            Block* newSushi = new Block(pos*48, 144, 0, 1, rand() % 3, levelNumber);
             blocks.push_back(newSushi);
             std::cout << "spawning normal bloc\n";
             break;
@@ -162,7 +163,7 @@ void PlayState::spawnNextRowBlocks()
         case 4:
           {
             //TODO: instantiate start of vertical sushi block
-            Block* newSushi = new Block(pos*48, 144, 0, 1, 1);
+            Block* newSushi = new Block(pos*48, 144, 0, 1, 1, levelNumber);
             newSushi->setTextureID("VerticalBlocks");
             blocks.push_back(newSushi);
             //std::cout << pos*48 << "\n";
@@ -212,14 +213,22 @@ void PlayState::update()
 
   if (shooter != nullptr) shooter->update();
 
+  /*
   std::vector<unsigned> toDelete;
-  
+
   for (size_t i = 0; i < balls.size(); i++)
   {
-    if (balls[i] != nullptr) balls[i]->update();
+    if (balls[i] != nullptr)
+    {
+      //balls[i]->update();
     if (balls[i]->toBeDeleted)
       toDelete.insert(toDelete.begin(), i);
+    else
+      balls[i]->fixedUpdate();
+    }
+
   }
+  
 
   if (toDelete.size() > 0 )
   {
@@ -229,12 +238,34 @@ void PlayState::update()
       balls.erase(balls.begin() + toDelete[i]);
     }
   }
+
+  */
+
+  updateBlocks();
+}
+
+void PlayState::updateBlocks()
+{
+  /*
+    std::vector<unsigned> toDeleteBlocks;
   
   for (size_t i = 0 ; i < blocks.size(); i++)
   {
     if (blocks[i] != nullptr) blocks[i]->update();
-  }  
-  
+    if (blocks[i]->toBeDeleted)
+      toDeleteBlocks.insert(toDeleteBlocks.begin(), i);
+  }
+
+  if (toDeleteBlocks.size() > 0 )
+  {
+    for (size_t i = 0; i < toDeleteBlocks.size(); i++)
+    {
+      blocks[toDeleteBlocks[i]]->clean();
+      delete blocks[toDeleteBlocks[i]];
+      blocks.erase(blocks.begin() + toDeleteBlocks[i]);
+    }
+  }
+  */
 }
 
 void PlayState::render()
@@ -306,15 +337,34 @@ void PlayState::render()
     
     //player.y+tileheight/2) - pos.y, pos.x - (player.x+tilewidth/2)));
 
-    
-    for (size_t i = 0 ; i < blocks.size(); i++)
-    {
-      if (blocks[i] != nullptr) blocks[i]->update();
-    }  
   }
-  
+
+  updateBlocks();
   //text
 
+    std::vector<unsigned> toDelete;
+  
+  for (size_t i = 0; i < balls.size(); i++)
+  {
+    if (balls[i] != nullptr)
+    {
+      //balls[i]->update();
+    if (balls[i]->toBeDeleted)
+      toDelete.insert(toDelete.begin(), i);
+    else
+      balls[i]->fixedUpdate();
+    }
+  }
+
+   if (toDelete.size() > 0 )
+  {
+    for (size_t i = 0; i < toDelete.size(); i++)
+    {
+      delete balls[toDelete[i]];
+      balls.erase(balls.begin() + toDelete[i]);
+    }
+  }
+  
   /*
   SDL_RenderCopy(TheGame::Instance()->getRenderer(), scoreLabelText, NULL, &scoreLabelRect); 
   SDL_RenderCopy(TheGame::Instance()->getRenderer(), scoreText, NULL, &scoreRect);
@@ -339,7 +389,7 @@ void PlayState::handleInput()
     if (canShoot && shooter->angle > 8 && shooter->angle < 172)// & shooter->angle > 8 && shooter->angle < 172)
     {
       //std::cout<<std::cout.precision();
-      std::cout << "shot ball\n";
+      //std::cout << "shot ball\n";
       //canShoot = false; //disable further shots
       //spawn and send off a new bubble at this angle
 
@@ -353,14 +403,17 @@ void PlayState::handleInput()
       float y = -1.0f * (float)sin(newBall->angle * (3.14159265359f/180.0f));
 
       //std::cout << "velocity x: " << x << " y: " << y <<"\n";
-      newBall->setVelocityX((x-0.03f)*newBall->speedMulitplier);
+      newBall->setVelocityX((x)*newBall->speedMulitplier);
       newBall->setVelocityY(y*newBall->speedMulitplier);
       
       //add to balls
       balls.push_back(newBall);
     }
-
   }
+
+    
+  updateBlocks();
+
 }
 
 void PlayState::clean()

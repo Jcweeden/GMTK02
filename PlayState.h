@@ -31,6 +31,7 @@ public:
   PlayState();
 
   void update();
+  void updateBlocks();
   void render();
   void handleInput();
   void clean();

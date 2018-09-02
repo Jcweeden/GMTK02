@@ -20,8 +20,8 @@ void GameObject::update()
 {
   velocity += acceleration;
 
-  std::cout << "velocity: x: " << (double)velocity.getX() << " y: " << (double)velocity.getY() << "\n";
-  std::cout << "before: x: " << position.getX() << " y: " << position.getY() << "\n";
+  // std::cout << "velocity: x: " << (double)velocity.getX() << " y: " << (double)velocity.getY() << "\n";
+  //std::cout << "before: x: " << position.getX() << " y: " << position.getY() << "\n";
 
                                                                                 position.setX((float)position.getX() + velocity.getX());
                                                                                 position.setY((float)position.getY() + velocity.getY());
@@ -30,7 +30,7 @@ void GameObject::update()
                                                                                 
                                                                                 //position += velocity;
 
-                                                                                std::cout << "after: x: " << position.getX() << " y: " << position.getY() << "\n";
+                                                                                //std::cout << "after: x: " << position.getX() << " y: " << position.getY() << "\n";
 
 };
 
