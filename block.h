@@ -17,7 +17,7 @@ class Block : public GameObject {
 
 public:
 
-  Block (int x, int y, unsigned p_numFrames, unsigned p_currentRow, unsigned p_currentFrame, unsigned p_countdownValue);
+  Block (int x, int y, unsigned p_numFrames, unsigned p_currentRow, unsigned p_currentFrame, unsigned p_countdownValue, int width = 48, int height = 48);
 
 
   virtual void update();

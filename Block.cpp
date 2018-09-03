@@ -1,7 +1,7 @@
 #include "Block.h"
 
-Block::Block(int x, int y, unsigned p_numFrames, unsigned p_currentRow, unsigned p_currentFrame, unsigned p_countdownValue)
-    : GameObject::GameObject(x,y,48,48,"blocks",p_numFrames,p_currentRow,p_currentFrame), countdownValue(p_countdownValue),
+Block::Block(int x, int y, unsigned p_numFrames, unsigned p_currentRow, unsigned p_currentFrame, unsigned p_countdownValue, int width, int height)
+    : GameObject::GameObject(x,y,width,height,"blocks",p_numFrames,p_currentRow,p_currentFrame), countdownValue(p_countdownValue),
 
 
     topCollider(GameObject   (x,   y,    48, 1,"none",0,0,0)),

@@ -23,6 +23,8 @@ public:
   void bounceHorizontal();
   void bounceVertical();
 
+  bool checkIfWallCollision(Vector2D endPos, float frameTimeRemaining);
+
 public:
 
   float angle;

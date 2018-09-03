@@ -80,7 +80,7 @@ Vector2D CollisionManager::lineLine(Vector2D p1, Vector2D p2, Vector2D p3, Vecto
  
   float d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
   // If d is zero, there is no intersection
-  if (d == 0) return Vector2D(0,0);
+  if (d == 0) return Vector2D(-1,-1);
  
   // Get the x and y
   float pre = (x1*y2 - y1*x2), post = (x3*y4 - y3*x4);
@@ -89,9 +89,9 @@ Vector2D CollisionManager::lineLine(Vector2D p1, Vector2D p2, Vector2D p3, Vecto
 
   // Check if the x and y coordinates are within both lines
   if ( x < std::min(x1, x2) || x > std::max(x1, x2) ||
-       x < std::min(x3, x4) || x > std::max(x3, x4) ) return Vector2D(0,0);
+       x < std::min(x3, x4) || x > std::max(x3, x4) ) return Vector2D(-1,-1);
   if ( y < std::min(y1, y2) || y > std::max(y1, y2) ||
-       y < std::min(y3, y4) || y > std::max(y3, y4) ) return Vector2D(0,0);
+       y < std::min(y3, y4) || y > std::max(y3, y4) ) return Vector2D(-1,-1);
  
   // Return the point of intersection
   Vector2D ret (x,y);
@@ -138,15 +138,15 @@ std::vector<Vector2D> CollisionManager::lineRect(Vector2D lineStartPos, Vector2D
 
   //add the type of collision to end of vector
   //horiz collision
-  if (hitPositions[0].getX() != 0 && hitPositions[0].getY() != 0)
-    hitPositions.push_back(Vector2D(1,0));
-  if (hitPositions[1].getX() != 0 && hitPositions[1].getY() != 0)
+  if (hitPositions[0].getX() != -1 && hitPositions[0].getY() != -1)
+    hitPositions.push_back(Vector2D(0,0));
+  if (hitPositions[1].getX() != -1 && hitPositions[1].getY() != -1)
     hitPositions.push_back(Vector2D(1,0));
   //vert collision
-  if (hitPositions[2].getX() != 0 && hitPositions[2].getY() != 0)
-    hitPositions.push_back(Vector2D(0,1));
-  if (hitPositions[3].getX() != 0 && hitPositions[3].getY() != 0)
-    hitPositions.push_back(Vector2D(0,1));
+  if (hitPositions[2].getX() != -1 && hitPositions[2].getY() != -1)
+    hitPositions.push_back(Vector2D(2,0));
+  if (hitPositions[3].getX() != -1 && hitPositions[3].getY() != -1)
+    hitPositions.push_back(Vector2D(3,0));
 
   return hitPositions;
 
